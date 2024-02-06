@@ -37,6 +37,7 @@ public class Command {
         }
 
         Utilizator utilizator = new Utilizator(nume, mail, prenume, adresa);
+//        Utilizator utilizator = new Utilizator(new UtilizatorBuilder().setNume(nume).setEmail(mail).setPrenume(prenume).setAdresa(adresa));
         db.addUser(utilizator);
 
     }
@@ -104,8 +105,6 @@ public class Command {
             }
         }
         Utilizator utilizator2 = db.getUtilizator(data2);
-
-
         db.addFriend(utilizator1, utilizator2);
 
     }
@@ -231,15 +230,12 @@ public class Command {
                 if (data[0].equals(stock)) {
                     utilizator.buyStock(stock, amount1, data[10]);
                     return;
-
                 }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
-
 
     public void end() {
         db.resetDb();

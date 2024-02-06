@@ -5,10 +5,10 @@ import java.util.ArrayList;
 
 public class Utilizator {
 
-    private String nume;
-    private String email;
-    private String prenume;
-    private String adresa;
+    private final String nume;
+    private final String email;
+    private final String prenume;
+    private final String adresa;
 
     private List<Utilizator> prieteni;
     private List<Accounts> accounts;
@@ -24,6 +24,16 @@ public class Utilizator {
         this.accounts = new ArrayList<>();
         this.stocks = new ArrayList<>();
     }
+
+//    public Utilizator( UtilizatorBuilder builder) {
+//        this.nume = builder.getNume();
+//        this.email = builder.getEmail();
+//        this.prenume = builder.getPrenume();
+//        this.adresa = builder.getAdresa();
+//        this.prieteni = builder.getPrieteni();
+//        this.accounts = builder.getAccounts();
+//        this.stocks = builder.getStocks();
+//    }
 
     public void addFriend(Utilizator utilizator) {
         prieteni.add(utilizator);

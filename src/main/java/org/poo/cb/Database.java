@@ -48,7 +48,6 @@ public class Database {
     }
 
     public void addAccount(String name, String currency) {
-//        Utilizator utilizator = getUtilizator(name);
         for (Utilizator user : utilizatori) {
             if (user.getEmail().equals(name)) {
                 user.addAccount(currency);

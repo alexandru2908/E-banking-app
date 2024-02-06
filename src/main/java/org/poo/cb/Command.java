@@ -15,11 +15,8 @@ public class Command {
         db = Database.getInstance();
     }
 
-    public void create(String[] data) {
+    public void create(String mail, String prenume, String nume,String[] data) {
 
-        String mail = data[2];
-        String prenume = data[3];
-        String nume = data[4];
         String adresa = "";
         for (int i = 5; i < data.length; i++) {
             if (i == data.length - 1) {
@@ -36,8 +33,11 @@ public class Command {
             }
         }
 
-        Utilizator utilizator = new Utilizator(nume, mail, prenume, adresa);
-//        Utilizator utilizator = new Utilizator(new UtilizatorBuilder().setNume(nume).setEmail(mail).setPrenume(prenume).setAdresa(adresa));
+        Utilizator utilizator = new Utilizator(new UtilizatorBuilder().
+                                                        setNume(nume).
+                                                        setEmail(mail).
+                                                        setPrenume(prenume).
+                                                        setAdresa(adresa));
         db.addUser(utilizator);
 
     }
@@ -49,7 +49,10 @@ public class Command {
             System.out.println("User with " + data + " doesn't exist");
             return;
         }
-        System.out.print("{\"email\":\"" + utilizator.getEmail() + "\",\"firstname\":\"" + utilizator.getPrenume() + "\",\"lastname\":" + "\"" + utilizator.getNume() + "\"" + ",\"address\":" + "\"" + utilizator.getAdresa() + "\"" + ",\"friends\":[");
+        System.out.print("{\"email\":\"" + utilizator.getEmail() + "\",\"firstname\":\"" +
+                                           utilizator.getPrenume() + "\",\"lastname\":" +
+                                           "\"" + utilizator.getNume() + "\"" + ",\"address\":" +
+                                           "\"" + utilizator.getAdresa() + "\"" + ",\"friends\":[");
         if (utilizator.getPrieteni().size() == 0) {
             System.out.println("]}");
         } else {
@@ -71,18 +74,22 @@ public class Command {
             System.out.print("]");
         } else {
             for (int i = 0; i < utilizator.getStocks().size() - 1; i++) {
-                System.out.print("{\"stockName\":\"" + utilizator.getStocks().get(i).getName() + "\",\"amount\":" + utilizator.getStocks().get(i).getQuantity() + "},");
+                System.out.print("{\"stockName\":\"" + utilizator.getStocks().get(i).getName() + "\",\"amount\":" +
+                        utilizator.getStocks().get(i).getQuantity() + "},");
             }
-            System.out.print("{\"stockName\":\"" + utilizator.getStocks().get(utilizator.getStocks().size() - 1).getName() + "\",\"amount\":" + utilizator.getStocks().get(utilizator.getStocks().size() - 1).getQuantity() + "}]");
+            System.out.print("{\"stockName\":\"" + utilizator.getStocks().get(utilizator.getStocks().size() - 1).getName()
+                    + "\",\"amount\":" + utilizator.getStocks().get(utilizator.getStocks().size() - 1).getQuantity() + "}]");
         }
         System.out.print(",\"accounts\":[");
         if (utilizator.getAccounts().size() == 0) {
             System.out.println("]}");
         } else {
             for (int i = 0; i < utilizator.getAccounts().size() - 1; i++) {
-                System.out.printf("{\"currencyname\":\"%s\",\"amount\":\"%.2f\"},", utilizator.getAccounts().get(i).getCurrency(), utilizator.getAccounts().get(i).getBalance());
+                System.out.printf("{\"currencyname\":\"%s\",\"amount\":\"%.2f\"},", utilizator.getAccounts().get(i).getCurrency(),
+                        utilizator.getAccounts().get(i).getBalance());
             }
-            System.out.printf("{\"currencyname\":\"%s\",\"amount\":\"%.2f\"}]}\n", utilizator.getAccounts().get(utilizator.getAccounts().size() - 1).getCurrency(), utilizator.getAccounts().get(utilizator.getAccounts().size() - 1).getBalance());
+            System.out.printf("{\"currencyname\":\"%s\",\"amount\":\"%.2f\"}]}\n",
+                    utilizator.getAccounts().get(utilizator.getAccounts().size() - 1).getCurrency(), utilizator.getAccounts().get(utilizator.getAccounts().size() - 1).getBalance());
         }
     }
 

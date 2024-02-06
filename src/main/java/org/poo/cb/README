@@ -1,0 +1,10 @@
+Predescu Ioan-Alexandru 333CB
+
+Designs patterns folosite:
+
+1. Facade - pentru a ascunde complexitatea sistemului de utilizator, in clasa Main am creat un obiect numit Command
+pentru a avea doar detalii despre comanda aleasa, iar functiile de executie a comenzii sunt apelate in clasa Main,
+aflandu se in clasa Command.
+2. Singleton - am creat o clasa Database, care contine o lista de useri, aceasta instanta fiind unica.
+3. Builder - am folosit builder pentru a crea obiecte de tip User, Stock si Account.
+4. Observer - am folosit observer pentru a notifica user-ul in cazul in care nu are destui bani pentru a cumpara un stock.

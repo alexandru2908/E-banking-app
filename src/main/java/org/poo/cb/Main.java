@@ -26,7 +26,7 @@ public class Main {
                     String[] data = line.split(" ");
 
                     if (data[0].equals("CREATE")) {
-                        comenzi.create(data);
+                        comenzi.create(data[2],data[3],data[4],data);
                     }
                     if(data[0].equals("LIST")) {
                         if (data[1].equals("USER")) {
@@ -60,10 +60,6 @@ public class Main {
                     if(data[0].equals("BUY")) {
                         comenzi.buy(data[2],data[3],data[4],files[1]);
                     }
-
-
-
-
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);

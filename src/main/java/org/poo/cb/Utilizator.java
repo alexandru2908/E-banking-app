@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 public class Utilizator {
 
+    private int state=0;
+
     private final String nume;
     private final String email;
     private final String prenume;
@@ -14,33 +16,42 @@ public class Utilizator {
     private List<Accounts> accounts;
     private List<Stocks> stocks;
 
+    public Observer observer = new Observer(this);
 
-    public Utilizator(String nume, String email, String prenume, String adresa) {
-        this.nume = nume;
-        this.email = email;
-        this.prenume = prenume;
-        this.adresa = adresa;
-        this.prieteni = new ArrayList<>();
-        this.accounts = new ArrayList<>();
-        this.stocks = new ArrayList<>();
+    public int getState() {
+        state = state + 1;
+        return state;
     }
 
-//    public Utilizator( UtilizatorBuilder builder) {
-//        this.nume = builder.getNume();
-//        this.email = builder.getEmail();
-//        this.prenume = builder.getPrenume();
-//        this.adresa = builder.getAdresa();
-//        this.prieteni = builder.getPrieteni();
-//        this.accounts = builder.getAccounts();
-//        this.stocks = builder.getStocks();
-//    }
+    public void setObserver(Observer observer) {
+        this.observer = observer;
+    }
+    private void setState(int state) {
+        this.state = state;
+        notifyObserver();
+    }
+
+    public void notifyObserver() {
+        observer.update();
+    }
+
+    public Utilizator( UtilizatorBuilder builder) {
+        this.nume = builder.getNume();
+        this.email = builder.getEmail();
+        this.prenume = builder.getPrenume();
+        this.adresa = builder.getAdresa();
+        this.prieteni = builder.getPrieteni();
+        this.accounts = builder.getAccounts();
+        this.stocks = builder.getStocks();
+
+    }
 
     public void addFriend(Utilizator utilizator) {
         prieteni.add(utilizator);
     }
 
     public void addAccount(String currency) {
-        accounts.add(new Accounts(currency, this.email));
+        accounts.add(new Accounts(new AccountBuilder().setCurrency(currency).setEmail(this.email)));
     }
 
     public String getEmail() {
@@ -124,6 +135,7 @@ public class Utilizator {
     }
 
     public boolean verifyFriendship( Utilizator utilizator2) {
+
         for (Utilizator utilizator : this.prieteni) {
             if (utilizator.getEmail().equals(utilizator2.getEmail())) {
                 return true;
@@ -150,16 +162,19 @@ public class Utilizator {
         }
     }
 
+
+
     public void buyStock(String stockName, int amount, String price) {
         double stockPrice = Double.parseDouble(price);
         int ok = 1;
         for (int i = 0; i< stocks.size(); i++) {
             if (stocks.get(i).getName().equals(stockName)) {
+
                 for (int j = 0; j < accounts.size(); j++) {
                     if (accounts.get(j).getCurrency().equals("USD")) {
                         ok = 0;
                         if (accounts.get(j).getBalance() < stockPrice * amount) {
-                            System.out.println("Insufficient amount in account for buying stock");
+                            notifyObserver();
                             return;
                         }
                         accounts.get(j).lowerBalance(stockPrice * amount);
@@ -173,15 +188,16 @@ public class Utilizator {
             for (int j = 0; j < accounts.size(); j++) {
                 if (accounts.get(j).getCurrency().equals("USD")) {
                     if (accounts.get(j).getBalance() < stockPrice * amount) {
-                        System.out.println("Insufficient amount in account for buying stock");
+                        notifyObserver();
                         return;
                     }
                     accounts.get(j).lowerBalance(stockPrice * amount);
-                    stocks.add(new Stocks(stockName, amount));
+                    stocks.add(new Stocks(new StockBuilder().setAmount(amount).setName(stockName)));
                     return;
                 }
             }
         }
 
     }
+
 }

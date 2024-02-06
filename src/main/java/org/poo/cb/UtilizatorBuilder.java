@@ -15,6 +15,7 @@ public class UtilizatorBuilder {
     private List<Stocks> stocks;
 
 
+
     public String getNume() {
         return this.nume;
     }
@@ -28,13 +29,13 @@ public class UtilizatorBuilder {
         return this.adresa;
     }
     public List<Utilizator> getPrieteni() {
-        return this.prieteni;
+        return new ArrayList<>();
     }
     public List<Accounts> getAccounts() {
-        return this.accounts;
+        return new ArrayList<>();
     }
     public List<Stocks> getStocks() {
-        return this.stocks;
+        return new ArrayList<>();
     }
 
     public UtilizatorBuilder setNume(String nume) {

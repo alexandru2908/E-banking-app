@@ -5,9 +5,15 @@ public class Accounts {
     private String name;
     private String currency;
 
-    public Accounts(String currency, String name) {
-        this.currency = currency;
-        this.name = name;
+//    public Accounts(String currency, String name) {
+//        this.currency = currency;
+//        this.name = name;
+//        this.balance = 0.00;
+//    }
+
+    public Accounts(AccountBuilder builder) {
+        this.currency = builder.getCurrency();
+        this.name = builder.getEmail();
         this.balance = 0.00;
     }
 

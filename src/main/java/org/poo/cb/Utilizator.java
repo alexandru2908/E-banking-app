@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Utilizator {
 
-    private int state=0;
+    private int state = 0;
 
     private final String nume;
     private final String email;
@@ -15,8 +15,10 @@ public class Utilizator {
     private List<Utilizator> prieteni;
     private List<Accounts> accounts;
     private List<Stocks> stocks;
+    private Factory factory = new Factory();
 
     public Observer observer = new Observer(this);
+    private boolean isPremium = false;
 
     public int getState() {
         state = state + 1;
@@ -26,6 +28,7 @@ public class Utilizator {
     public void setObserver(Observer observer) {
         this.observer = observer;
     }
+
     private void setState(int state) {
         this.state = state;
         notifyObserver();
@@ -35,7 +38,7 @@ public class Utilizator {
         observer.update();
     }
 
-    public Utilizator( UtilizatorBuilder builder) {
+    public Utilizator(UtilizatorBuilder builder) {
         this.nume = builder.getNume();
         this.email = builder.getEmail();
         this.prenume = builder.getPrenume();
@@ -51,7 +54,8 @@ public class Utilizator {
     }
 
     public void addAccount(String currency) {
-        accounts.add(new Accounts(new AccountBuilder().setCurrency(currency).setEmail(this.email)));
+        Accounts a = factory.createAccount(currency, this.email);
+        accounts.add(a);
     }
 
     public String getEmail() {
@@ -99,10 +103,14 @@ public class Utilizator {
                     System.out.println("Insufficient amount in account " + source + " for exchange");
                     return;
                 }
-                if (utilizator.getAccounts().get(i).getBalance() / 2 > amountIntermediar) {
+                if (utilizator.isPremium == true) {
                     utilizator.getAccounts().get(i).lowerBalance(amountIntermediar);
-                } else {
-                    utilizator.getAccounts().get(i).lowerBalance(amountIntermediar + 0.01 * amountIntermediar);
+                } else if (utilizator.isPremium == false) {
+                    if (utilizator.getAccounts().get(i).getBalance() / 2 > amountIntermediar) {
+                        utilizator.getAccounts().get(i).lowerBalance(amountIntermediar);
+                    } else {
+                        utilizator.getAccounts().get(i).lowerBalance(amountIntermediar + 0.01 * amountIntermediar);
+                    }
                 }
             }
             if (utilizator.getAccounts().get(i).getCurrency().equals(destination)) {
@@ -134,7 +142,7 @@ public class Utilizator {
         }
     }
 
-    public boolean verifyFriendship( Utilizator utilizator2) {
+    public boolean verifyFriendship(Utilizator utilizator2) {
 
         for (Utilizator utilizator : this.prieteni) {
             if (utilizator.getEmail().equals(utilizator2.getEmail())) {
@@ -163,23 +171,43 @@ public class Utilizator {
     }
 
 
+    public void makeTransaction(String stockName, double price, int amount, int i, int j, int ok) {
+        if (accounts.get(j).getBalance() < price) {
+            notifyObserver();
+            return;
+        }
+        if (ok == 0) {
+            accounts.get(j).lowerBalance(price);
+            stocks.get(i).increaseAmount(amount);
+            return;
+        } else {
+            accounts.get(j).lowerBalance(price);
+            stocks.add(new Stocks(new StockBuilder().setAmount(amount).setName(stockName)));
+            return;
+        }
+    }
 
-    public void buyStock(String stockName, int amount, String price) {
+    public void buyStock(String stockName, int amount, String price, List<String> stockuri) {
         double stockPrice = Double.parseDouble(price);
         int ok = 1;
-        for (int i = 0; i< stocks.size(); i++) {
+        int checkStock = 0;
+        for (int i = 0; i < stocks.size(); i++) {
             if (stocks.get(i).getName().equals(stockName)) {
-
                 for (int j = 0; j < accounts.size(); j++) {
                     if (accounts.get(j).getCurrency().equals("USD")) {
                         ok = 0;
-                        if (accounts.get(j).getBalance() < stockPrice * amount) {
-                            notifyObserver();
-                            return;
+                        checkStock = 0;
+                        for (int k = 0; k < stockuri.size(); k++) {
+                            if (stockuri.get(k).equals(stockName)) {
+                                checkStock = 1;
+                            }
                         }
-                        accounts.get(j).lowerBalance(stockPrice * amount);
-                        System.out.print(stockPrice * amount);
-                        return;
+                        if (this.isPremium == true && checkStock == 1) {
+                            double discount = 0.95 * (stockPrice * amount);
+                            makeTransaction(stockName, discount, amount, i, j, ok);
+                        } else {
+                            makeTransaction(stockName, stockPrice * amount, amount, i, j, ok);
+                        }
                     }
                 }
             }
@@ -187,17 +215,37 @@ public class Utilizator {
         if (ok == 1) {
             for (int j = 0; j < accounts.size(); j++) {
                 if (accounts.get(j).getCurrency().equals("USD")) {
-                    if (accounts.get(j).getBalance() < stockPrice * amount) {
-                        notifyObserver();
+                    checkStock = 0;
+                    for (int k = 0; k < stockuri.size(); k++) {
+                        if (stockuri.get(k).equals(stockName)) {
+                            checkStock = 1;
+                        }
+                    }
+                    if (this.isPremium == true && checkStock == 1) {
+                        double discount = 0.95 * (stockPrice * amount);
+                        makeTransaction(stockName, discount, amount, 1, j, ok);
+                        return;
+                    } else {
+                        makeTransaction(stockName, stockPrice * amount, amount, 1, j, ok);
                         return;
                     }
-                    accounts.get(j).lowerBalance(stockPrice * amount);
-                    stocks.add(new Stocks(new StockBuilder().setAmount(amount).setName(stockName)));
-                    return;
                 }
             }
         }
+    }
 
+    public void buyPremium() {
+        for (int i = 0; i < accounts.size(); i++) {
+            if (accounts.get(i).getCurrency().equals("USD")) {
+                if (accounts.get(i).getBalance() < 100) {
+                    System.out.println("Insufficient amount in account for buying premium");
+                    return;
+                }
+                accounts.get(i).lowerBalance(100);
+                this.isPremium = true;
+                return;
+            }
+        }
     }
 
 }

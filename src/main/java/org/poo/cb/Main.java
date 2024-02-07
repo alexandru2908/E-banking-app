@@ -58,8 +58,14 @@ public class Main {
                         comenzi.recommend(files[1]);
                     }
                     if(data[0].equals("BUY")) {
-                        comenzi.buy(data[2],data[3],data[4],files[1]);
+                        if (data[1].equals("STOCKS"))
+                            comenzi.buy(data[2],data[3],data[4],files[1]);
+                        if (data[1].equals("PREMIUM")) {
+                            comenzi.buyPremium(data[2]);
+                        }
+
                     }
+
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);

@@ -10,6 +10,7 @@ import java.util.List;
 public class Command {
 
     Database db;
+    List <String> stocks = new ArrayList<>();
 
     public Command(String rates, String stocks, String comands) {
         db = Database.getInstance();
@@ -179,7 +180,6 @@ public class Command {
 
     public void recommend(String file) {
 
-        List<String> stocks = new ArrayList<>();
         try {
             FileReader fr = new FileReader(file);
             Scanner sc = new Scanner(fr);
@@ -214,7 +214,7 @@ public class Command {
         System.out.print("{\"stockstobuy\":[");
         if (stocks.size() == 0) {
             System.out.println("]}");
-            return;
+            return ;
         } else {
 
             for (int i = 0; i < stocks.size() - 1; i++) {
@@ -222,6 +222,7 @@ public class Command {
             }
             System.out.println("\"" + stocks.get(stocks.size() - 1) + "\"]}");
         }
+        return ;
     }
 
     public void buy(String email, String stock, String amount, String file) {
@@ -235,13 +236,22 @@ public class Command {
                 String line = sc.nextLine();
                 String[] data = line.split(",");
                 if (data[0].equals(stock)) {
-                    utilizator.buyStock(stock, amount1, data[10]);
+                    utilizator.buyStock(stock, amount1, data[10],stocks);
                     return;
                 }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void buyPremium(String email) {
+        Utilizator utilizator = db.getUtilizator(email);
+        if (utilizator == null) {
+            System.out.println("User with email " + email + " doesn't exist");
+            return;
+        }
+        utilizator.buyPremium();
     }
 
     public void end() {

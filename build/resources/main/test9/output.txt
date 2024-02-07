@@ -1,0 +1,6 @@
+{"stocks":[],"accounts":[{"currencyName":"USD","amount":"1000.00"}]}
+{"stocksToBuy":["MSFT","NFLX","META","GOOGL","GOOG","NVDA","AMZN"]}
+{"stocks":[{"stockName":"AMZN","amount":2}],"accounts":[{"currencyName":"USD","amount":"689.64"}]}
+{"stocks":[{"stockName":"AMZN","amount":2}],"accounts":[{"currencyName":"USD","amount":"1100.64"}]}
+{"stocks":[{"stockName":"AMZN","amount":2}],"accounts":[{"currencyName":"USD","amount":"1000.64"}]}
+{"stocks":[{"stockName":"AMZN","amount":4}],"accounts":[{"currencyName":"USD","amount":"705.80"}]}
